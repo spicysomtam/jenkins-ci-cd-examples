@@ -30,7 +30,7 @@ pipeline {
           switch (params.action) {
             case 'update':
               outputs = cfnUpdate(stack: params.stackname, 
-                file:'ecs-cluster.template', 
+                file:'cfn/ecs-cluster.template', 
                 params:["KeyName=${params.keypair}",'EcsCluster=getting-started',"AsgMaxSize=${params.asgSize}"], 
                 tags: ['Name=ECS'],
                 timeoutInMinutes:10, 
