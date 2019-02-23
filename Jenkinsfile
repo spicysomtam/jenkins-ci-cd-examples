@@ -3,7 +3,7 @@
 pipeline {
 
   parameters {
-    choice(name: 'action', choices: 'update\ndelete', description: 'Update (or create) or delete the cfn stack.')
+    choice(name: 'action', choices: 'create\ndelete', description: 'Create (or update) or delete the cfn stack.')
     string(name: 'stackname', defaultValue : 'EcsClusterStack', description: "Name of ecs cluster stack.")
     string(name: 'asgSize', defaultValue : '2', description: "ECS ASG default/max size.")
     string(name: 'keypair', defaultValue : 'myKeypair', description: "EC2 key pair name.")
@@ -21,14 +21,14 @@ pipeline {
 
   stages {
 
-    stage('Update or delete cfn stack') {
+    stage('Create or delete cfn stack') {
       steps {
         script {
           currentBuild.displayName = "#" + env.BUILD_NUMBER + " " + params.action
           def outputs
 
           switch (params.action) {
-            case 'update':
+            case 'create':
               outputs = cfnUpdate(stack: params.stackname, 
                 file:'cfn/ecs-cluster.template', 
                 params:["KeyName=${params.keypair}",'EcsCluster=getting-started',"AsgMaxSize=${params.asgSize}"], 
