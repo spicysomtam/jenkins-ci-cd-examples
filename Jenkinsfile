@@ -32,7 +32,7 @@ pipeline {
 
           switch (params.action) {
             case 'create':
-              outputs = cfnUpdate(stack: stackname", 
+              outputs = cfnUpdate(stack: stackname, 
                 file:'cfn/ecs-cluster.template', 
                 params:["KeyName=${params.keypair}",
                   "EcsCluster=${params.clustername}",
