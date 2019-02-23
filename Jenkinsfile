@@ -25,14 +25,14 @@ pipeline {
     stage('Create or delete cfn stack') {
       steps {
         script {
-          currentBuild.displayName = "#" + env.BUILD_NUMBER + " " + params.action + " " + params.clustername
           def outputs
           def clustername = params.clustername
           def stackname = 'EcsCluster' + clustername.capitalize()
+          currentBuild.displayName = "#" + env.BUILD_NUMBER + " " + params.action + " " + stackname
 
           switch (params.action) {
             case 'create':
-              outputs = cfnUpdate(stack: "${stackname}Stack", 
+              outputs = cfnUpdate(stack: stackname", 
                 file:'cfn/ecs-cluster.template', 
                 params:["KeyName=${params.keypair}",
                   "EcsCluster=${params.clustername}",
@@ -52,7 +52,7 @@ pipeline {
               // To do: You need to scale the number of ecs ec2 instances to 0 before deleting the stack, otherwise it reports an error on delete.
               // The delete does work; but the stack delete shows failure.
               // See this: https://forums.aws.amazon.com/thread.jspa?messageID=663112
-              outputs = cfnDelete(stack: "${stackname}Stack", 
+              outputs = cfnDelete(stack: stackname, 
                 timeoutInMinutes:10, 
                 pollInterval:1000)
               println outputs
