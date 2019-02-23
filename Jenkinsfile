@@ -4,7 +4,8 @@ pipeline {
 
   parameters {
     choice(name: 'action', choices: 'create\ndelete', description: 'Create (or update) or delete the cfn stack.')
-    string(name: 'stackname', defaultValue : 'EcsClusterStack', description: "Name of ecs cluster stack.")
+    string(name: 'clustername', defaultValue : 'demo', description: "Name of ecs cluster; eg demo.")
+    string(name: 'instanceType', defaultValue : 't2.micro', description: "ECS instance type.")
     string(name: 'asgSize', defaultValue : '2', description: "ECS ASG default/max size.")
     string(name: 'keypair', defaultValue : 'myKeypair', description: "EC2 key pair name.")
     string(name: 'credential', defaultValue : 'jenkins', description: "Jenkins credential that provides the AWS access key and secret.")
@@ -24,15 +25,20 @@ pipeline {
     stage('Create or delete cfn stack') {
       steps {
         script {
-          currentBuild.displayName = "#" + env.BUILD_NUMBER + " " + params.action
+          currentBuild.displayName = "#" + env.BUILD_NUMBER + " " + params.action + " " + params.clustername
           def outputs
+          def clustername = params.clustername
+          def stackname = 'EcsCluster' + clustername.capitalize()
 
           switch (params.action) {
             case 'create':
-              outputs = cfnUpdate(stack: params.stackname, 
+              outputs = cfnUpdate(stack: "${stackname}Stack, 
                 file:'cfn/ecs-cluster.template', 
-                params:["KeyName=${params.keypair}",'EcsCluster=getting-started',"AsgMaxSize=${params.asgSize}"], 
-                tags: ['Name=ECS'],
+                params:["KeyName=${params.keypair}",
+                  "EcsCluster=${params.clustername}",
+                  "EcsInstanceType=${params.instanceType}",
+                  "AsgMaxSize=${params.asgSize}"], 
+                tags: ["Name=${stackname}"],
                 timeoutInMinutes:10, 
                 pollInterval:1000)
               println outputs
