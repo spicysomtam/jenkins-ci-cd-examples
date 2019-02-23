@@ -6,8 +6,8 @@ pipeline {
     choice(name: 'action', choices: 'update\ndelete', description: 'Update (or create) or delete the cfn stack.')
     string(name: 'stackname', defaultValue : 'EcsClusterStack', description: "Name of ecs cluster stack.")
     string(name: 'asgSize', defaultValue : '2', description: "ECS ASG default/max size.")
-    string(name: 'keypair', defaultValue : 'aws2', description: "EC2 key pair name.")
-    string(name: 'credential', defaultValue : 'aws2', description: "Jenkins credential that provides the AWS access key and secret.")
+    string(name: 'keypair', defaultValue : 'myKeypair', description: "EC2 key pair name.")
+    string(name: 'credential', defaultValue : 'jenkins', description: "Jenkins credential that provides the AWS access key and secret.")
     string(name: 'region', defaultValue : 'eu-west-1', description: "AWS region.")
   }
 
@@ -30,7 +30,7 @@ pipeline {
           switch (params.action) {
             case 'update':
               outputs = cfnUpdate(stack: params.stackname, 
-                file:'ecs-via-cfn/cfn/ecs-cluster.template', 
+                file:'cfn/ecs-cluster.template', 
                 params:["KeyName=${params.keypair}",'EcsCluster=getting-started',"AsgMaxSize=${params.asgSize}"], 
                 tags: ['Name=ECS'],
                 timeoutInMinutes:10, 
