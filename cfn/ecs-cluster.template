@@ -5,7 +5,8 @@
     "VpcCidrs": {
       "vpc": {"cidr" : "10.0.0.0/16"},
       "pubsubnet1": {"cidr" : "10.0.0.0/24"},
-      "pubsubnet2": {"cidr" :"10.0.1.0/24"}
+      "pubsubnet2": {"cidr" : "10.0.1.0/24"}
+      "pubsubnet3": {"cidr" : "10.0.2.0/24"}
     },
     "AWSRegionToAMI" : {
       "us-east-1"      : { "AMIID" : "ami-0eeb334a4b083a5ea" },
@@ -80,7 +81,7 @@
     },
     "SubnetIds": {
       "Type": "CommaDelimitedList",
-      "Description": "Optional - Comma separated list of two (2) existing VPC Subnet Ids where ECS instances will run.  Required if setting VpcId.",
+      "Description": "Optional - Comma separated list of 3 existing VPC Subnet Ids where ECS instances will run.  Required if setting VpcId.",
       "Default": ""
     },
     "AsgMaxSize": {
@@ -253,6 +254,42 @@
         }
       }
     },
+    "PubSubnetAz3": {
+      "Condition": "CreateVpcResources",
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": {
+          "Ref": "Vpc"
+        },
+        "CidrBlock": {
+          "Fn::FindInMap": ["VpcCidrs", "pubsubnet3", "cidr"]
+        },
+        "MapPublicIpOnLaunch": "true",
+        "AvailabilityZone": {
+          "Fn::If": [
+            "UseSpecifiedVpcAvailabilityZones",
+            {
+              "Fn::Select": [
+                "2",
+                {
+                  "Ref": "VpcAvailabilityZones"
+                }
+              ]
+            },
+            {
+              "Fn::Select": [
+                "2",
+                {
+                  "Fn::GetAZs": {
+                    "Ref": "AWS::Region"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
     "InternetGateway": {
       "Condition": "CreateVpcResources",
       "Type": "AWS::EC2::InternetGateway"
@@ -310,6 +347,18 @@
       "Properties": {
         "SubnetId": {
           "Ref": "PubSubnetAz2"
+        },
+        "RouteTableId": {
+          "Ref": "RouteViaIgw"
+        }
+      }
+    },
+    "PubSubnet3RouteTableAssociation": {
+      "Condition": "CreateVpcResources",
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "PubSubnetAz3"
         },
         "RouteTableId": {
           "Ref": "RouteViaIgw"
@@ -481,6 +530,9 @@
                     },
                     {
                       "Ref": "PubSubnetAz2"
+                    },
+                    {
+                      "Ref": "PubSubnetAz3"
                     }
                   ]
                 ]
@@ -550,6 +602,11 @@
       "Value": {"Ref":"PubSubnetAz2"},
       "Export": { "Name" : {"Fn::Sub":"${AWS::StackName}-SubnetB"}}
     },
+    "SubnetC": {
+      "Description": "The ID of subnet C",
+      "Value": {"Ref":"PubSubnetAz3"},
+      "Export": { "Name" : {"Fn::Sub":"${AWS::StackName}-SubnetC"}}
+    },
     "AvailabilityZone1": {
       "Description": "AZ 1",
       "Value": {"Fn::GetAtt":["PubSubnetAz1","AvailabilityZone"]},
@@ -559,6 +616,12 @@
       "Description": "AZ 2",
       "Value": {"Fn::GetAtt":["PubSubnetAz2","AvailabilityZone"]},
       "Export": { "Name" : {"Fn::Sub": "${AWS::StackName}-AZ2"}}
+    },
+    "AvailabilityZone3": {
+      "Description": "AZ 3",
+      "Value": {"Fn::GetAtt":["PubSubnetAz3","AvailabilityZone"]},
+      "Export": { "Name" : {"Fn::Sub": "${AWS::StackName}-AZ3"}}
     }
+ 
   }
 }

@@ -6,7 +6,7 @@ pipeline {
     choice(name: 'action', choices: 'create\ndelete', description: 'Create (or update) or delete the cfn stack.')
     string(name: 'clustername', defaultValue : 'demo', description: "Name of ecs cluster; eg demo.")
     string(name: 'instanceType', defaultValue : 't2.micro', description: "ECS instance type.")
-    string(name: 'asgSize', defaultValue : '2', description: "ECS ASG default/max size.")
+    string(name: 'asgSize', defaultValue : '3', description: "ECS ASG default/max size.")
     string(name: 'keypair', defaultValue : 'myKeypair', description: "EC2 key pair name.")
     string(name: 'credential', defaultValue : 'jenkins', description: "Jenkins credential that provides the AWS access key and secret.")
     string(name: 'region', defaultValue : 'eu-west-1', description: "AWS region.")
