@@ -5,6 +5,7 @@ pipeline {
   parameters {
     choice(name: 'action', choices: 'create\ndelete', description: 'Create (or update) or delete the cfn stack.')
     string(name: 'clustername', defaultValue : 'demo', description: "Name of ecs cluster; eg demo.")
+    string(name: 'vpcId', defaultValue : '', description: "vpcId to deploy cluster into; leave blank to create a new vpc for the ecs cluster.")
     string(name: 'instanceType', defaultValue : 't2.micro', description: "ECS instance type.")
     string(name: 'asgSize', defaultValue : '3', description: "ECS ASG default/max size.")
     string(name: 'keypair', defaultValue : 'myKeypair', description: "EC2 key pair name.")
@@ -35,6 +36,7 @@ pipeline {
               outputs = cfnUpdate(stack: stackname, 
                 file:'cfn/ecs-cluster.template', 
                 params:["KeyName=${params.keypair}",
+                  "VpcId=${params.vpcId}",
                   "EcsCluster=${params.clustername}",
                   "EcsInstanceType=${params.instanceType}",
                   "AsgMaxSize=${params.asgSize}"], 
