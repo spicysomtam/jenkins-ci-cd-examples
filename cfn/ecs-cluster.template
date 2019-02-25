@@ -583,6 +583,7 @@
   },
   "Outputs": {
     "VpcId": {
+      "Condition": "CreateVpcResources",
       "Description": "The VPC ID of the VPC",
       "Value": { "Ref" : "Vpc" },
       "Export": { "Name" : {"Fn::Sub": "${AWS::StackName}-VPCID"}}
@@ -593,31 +594,37 @@
       "Export": { "Name" : {"Fn::Sub": "${AWS::StackName}-KeyName"}}
     },
     "SubnetA": {
+      "Condition": "CreateVpcResources",
       "Description": "The ID of subnet A",
       "Value": {"Ref":"PubSubnetAz1"},
       "Export": { "Name" : {"Fn::Sub": "${AWS::StackName}-SubnetA"}}
     },
     "SubnetB": {
+      "Condition": "CreateVpcResources",
       "Description": "The ID of subnet B",
       "Value": {"Ref":"PubSubnetAz2"},
       "Export": { "Name" : {"Fn::Sub":"${AWS::StackName}-SubnetB"}}
     },
     "SubnetC": {
+      "Condition": "CreateVpcResources",
       "Description": "The ID of subnet C",
       "Value": {"Ref":"PubSubnetAz3"},
       "Export": { "Name" : {"Fn::Sub":"${AWS::StackName}-SubnetC"}}
     },
     "AvailabilityZone1": {
+      "Condition": "CreateVpcResources",
       "Description": "AZ 1",
       "Value": {"Fn::GetAtt":["PubSubnetAz1","AvailabilityZone"]},
       "Export": { "Name" : {"Fn::Sub": "${AWS::StackName}-AZ1"}}
     },
     "AvailabilityZone2": {
+      "Condition": "CreateVpcResources",
       "Description": "AZ 2",
       "Value": {"Fn::GetAtt":["PubSubnetAz2","AvailabilityZone"]},
       "Export": { "Name" : {"Fn::Sub": "${AWS::StackName}-AZ2"}}
     },
     "AvailabilityZone3": {
+      "Condition": "CreateVpcResources",
       "Description": "AZ 3",
       "Value": {"Fn::GetAtt":["PubSubnetAz3","AvailabilityZone"]},
       "Export": { "Name" : {"Fn::Sub": "${AWS::StackName}-AZ3"}}
