@@ -12,7 +12,7 @@
       "us-east-1"      : { "AMIID" : "ami-0eeb334a4b083a5ea" },
       "us-west-1"      : { "AMIID" : "ami-0b2728a9763055cf7" },
       "us-west-2"      : { "AMIID" : "ami-0c4b05c0409735671" },
-      "eu-west-1"      : { "AMIID" : "ami-0150b2ec056e3c3c1" },
+      "eu-west-1"      : { "AMIID" : "ami-0851c53aff84212c3" },
       "eu-central-1"   : { "AMIID" : "ami-07ba9ca2923346c0c" },
       "ap-northeast-1" : { "AMIID" : "ami-07fa24c38c41a864f" },
       "ap-southeast-1" : { "AMIID" : "ami-05bdc52e8913188a1" },
